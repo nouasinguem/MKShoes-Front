@@ -1,0 +1,55 @@
+.container {
+    width: 300px;
+    margin: auto;
+    text-align: center;
+}
+.container img {
+    width: 120px;
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 5%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow around the logo */
+    object-fit: cover;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.tabs button {
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.tabs .active {
+    border-bottom: 2px solid green;
+}
+
+.form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.form button {
+    width: 100%;
+    padding: 10px;
+    background: green;
+    color: white;
+    border: none;
+}
+.guest {
+    background: transparent;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.guest:hover {
+    background: #f5f5f5;
+}
