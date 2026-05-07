@@ -47,7 +47,7 @@ function ProductPage() {
     return(
         <div className="product-container">
             <div className="product-image">
-                <img src={`${API_URL}/ShoesImages/${product.productImage}`}
+                <img src={`${API_URL}/images/${product.productImage}`}
                      alt={product.productName} />
             </div>
             <div className="product-details">

@@ -54,7 +54,7 @@ function Navbar() {
 
                     {cartItems.map((item, index) => (
                         <div key={index} className="cart-item">
-                            <img src={`${API_URL}/ShoesImages/${item.productImage}`} className="cart-img" />
+                            <img src={`${API_URL}/images/${item.productImage}`} className="cart-img" />
                             <p>Size: {item.size}</p>
                             <p>Qty: {item.quantity}</p>
                         </div>

@@ -39,7 +39,7 @@ function Home() {
                 <div className="products">
                     {products.map(product => (
                         <div className="product-card" key={product.productId} onClick={() => navigate(`/product/${product.productId}`)}>
-                            <img src={`${API_URL}/ShoesImages/${product.productImage}`} />
+                            <img src={`${API_URL}/images/${product.productImage}`} />
                             <p className="name">{product.productName}</p>
                             <p className="price">£{product.productPrice}</p>
                         </div>
