@@ -30,7 +30,7 @@ function App() {
                             <ProductDescription />
                         </>
                     }></Route>
-                    <Route path = '/products' element = {
+                    <Route path = '/' element = {
                         <>
                             <Navbar />
                             <Home />

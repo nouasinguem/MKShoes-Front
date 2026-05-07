@@ -34,7 +34,7 @@ function Navbar() {
     return (
         <div className="navbar">
 
-            <Link to="/products">
+            <Link to="/">
                 <img src={logo} alt="MKShoes Logo" className="logo" />
             </Link>
 
