@@ -8,12 +8,13 @@ import auth from "../Images/auth.png"
 
 
 function Navbar() {
+    const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const [showCart, setShowCart] = useState(false);
     const [cartItems, setCartItems] = useState([]);
     const fetchCart = async () => {
         try {
-            const res = await fetch("http://localhost:8080/cart", {
+            const res = await fetch(`${API_URL}/cart`, {
                 credentials: "include"
             });
             const data = await res.json();
@@ -53,7 +54,7 @@ function Navbar() {
 
                     {cartItems.map((item, index) => (
                         <div key={index} className="cart-item">
-                            <img src={`http://localhost:8080/ShoesImages/${item.productImage}`} className="cart-img" />
+                            <img src={`${API_URL}/ShoesImages/${item.productImage}`} className="cart-img" />
                             <p>Size: {item.size}</p>
                             <p>Qty: {item.quantity}</p>
                         </div>

@@ -4,7 +4,7 @@ import "../css/loginSignUp.css";
 import logo from "../Images/MKDesign.png"
 
 function LoginSignUp (){
-
+    const API_URL = import.meta.env.VITE_API_URL;
     const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate(); //Use as a router to goto another page
     const [formData, setFormData] = useState({
@@ -23,8 +23,8 @@ function LoginSignUp (){
     const handleSubmit = async () => {
         try {
             const url = isLogin
-                ? "http://localhost:8080/auth/login"
-                : "http://localhost:8080/auth/signup";
+                ? `${API_URL}/auth/login`
+                : `${API_URL}/auth/signup`;
 
             const body = isLogin
                 ? {

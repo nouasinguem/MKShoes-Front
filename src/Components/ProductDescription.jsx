@@ -3,15 +3,15 @@ import { useParams } from "react-router-dom";
 import "../css/productDescription.css";
 
 function ProductPage() {
+    const API_URL = import.meta.env.VITE_API_URL;
     const { id } = useParams();
-
     const [product, setProduct] = useState(null);
     const sizes = [6, 7, 8, 9, 10, 11, 12];
     const [selectedSize, setSelectedSize] = useState(null);
     const [quantity, setQuantity] = useState(1);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/products/${id}`)
+        fetch(`${API_URL}/products/${id}`)
             .then(res => res.json())
             .then(data => setProduct(data))
             .catch(err => console.error(err));
@@ -22,7 +22,7 @@ function ProductPage() {
             alert("Select a size first");
             return;
         }
-        await fetch("http://localhost:8080/cart/add", {
+        await fetch(`${API_URL}/cart/add`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -47,7 +47,7 @@ function ProductPage() {
     return(
         <div className="product-container">
             <div className="product-image">
-                <img src={`http://localhost:8080/ShoesImages/${product.productImage}`}
+                <img src={`${API_URL}/ShoesImages/${product.productImage}`}
                      alt={product.productName} />
             </div>
             <div className="product-details">

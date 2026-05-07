@@ -5,11 +5,12 @@ import summersale from "../Images/summerSale.png";
 
 
 function Home() {
+    const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/products")
+        fetch(`${API_URL}/products`)
             .then(res => {
                 if (!res.ok) throw new Error("API error");
                 return res.json();
@@ -27,10 +28,6 @@ function Home() {
             });
     }, []);
 
-    if(!products)
-    {
-        <p>Product Loading...</p>
-    }
     return(
         <div className="home">
             <div className="summer-sale">
@@ -42,7 +39,7 @@ function Home() {
                 <div className="products">
                     {products.map(product => (
                         <div className="product-card" key={product.productId} onClick={() => navigate(`/product/${product.productId}`)}>
-                            <img src={`http://localhost:8080/ShoesImages/${product.productImage}`} />
+                            <img src={`${API_URL}/ShoesImages/${product.productImage}`} />
                             <p className="name">{product.productName}</p>
                             <p className="price">£{product.productPrice}</p>
                         </div>

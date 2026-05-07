@@ -4,6 +4,7 @@ import "../css/checkout.css";
 
 
 function Checkout(){
+    const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const [cartItems, setCartItems] = useState([]);
     useEffect(() => {
@@ -33,7 +34,7 @@ function Checkout(){
 
     const fetchCart = async () => {
         try {
-            const res = await fetch("http://localhost:8080/cart", {
+            const res = await fetch(`${API_URL}/cart`, {
                 credentials: "include"
             });
             const data = await res.json();
@@ -53,14 +54,16 @@ function Checkout(){
         }
 
         try {
-            const email= localStorage.getItem("email"); // or however you store it
+
+            const user = JSON.parse(localStorage.getItem("email")); // parse JSON
+            const email = user.email;
 
             const orderItems = cartItems.map(item => ({
                 productId: item.productId,
                 quantity: item.quantity
             }));
 
-            const res = await fetch("http://localhost:8080/orders/", {
+            const res = await fetch(`${API_URL}/orders/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -81,7 +84,7 @@ function Checkout(){
             }
 
             alert("Order placed successfully!");
-             await fetch("http://localhost:8080/cart/clear-cart", {
+             await fetch(`${API_URL}/cart/clear-cart`, {
                  method: "DELETE",
                  credentials: "include"
              });
