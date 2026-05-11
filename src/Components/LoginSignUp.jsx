@@ -5,8 +5,8 @@ import logo from "../Images/MKDesign.png"
 
 function LoginSignUp (){
     const API_URL = import.meta.env.VITE_API_URL;
-    const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate(); //Use as a router to goto another page
+    const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -55,8 +55,9 @@ function LoginSignUp (){
             // Save user (important step)
             localStorage.setItem("email", JSON.stringify(user));
 
+            alert("Login Successful.\nWelcome to your account " + user.name + ".\nEnjoy shopping with us.");
             // Redirect to home page
-            navigate("/checkout");
+            navigate("/");
 
         } catch (error) {
             console.error("Error:", error);
@@ -73,7 +74,8 @@ function LoginSignUp (){
 
         console.log("Guest mode:", guestEmail);
 
-        navigate("/checkout");
+        alert("Hope you enjoy your shopping!!")
+        navigate("/");
     };
     return (
         <div className="container">
@@ -112,7 +114,7 @@ function LoginSignUp (){
                     onChange={handleChange}
                 />
 
-                <button onClick={handleSubmit}> {isLogin ? "Login" : "Sign Up"} </button>
+                <button className="log" onClick={handleSubmit}> {isLogin ? "Login" : "Sign Up"} </button>
                 <hr/>
                 <button type="button" className="guest" onClick={guestCheckout}>Shop as Guest</button>
             </div>

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../css/navBar.css";
 import logo from "../Images/MKDesign.png"
 import cart from "../Images/cart.png"
-import auth from "../Images/auth.png"
+import auth from "../Images/auth.jpg"
 
 
 function Navbar() {
@@ -61,7 +61,7 @@ function Navbar() {
                     ))}
                     {cartItems.length > 0 && (
                         <button className="checkout-btn" onClick= {
-                            () =>  {navigate("/auth")}}>
+                            () => {navigate("/checkout")}}>
                             Checkout
                         </button>
                     )}

@@ -12,36 +12,11 @@ function App() {
             <BrowserRouter>
 
                 <Routes>
-                    <Route path = '/auth' element = {
-                        <>
-
-                            <LoginSignUp />
-                        </>
-                    }></Route>
-                    <Route path = '/checkout' element = {
-                        <>
-                            <Navbar />
-                            <Checkout />
-                        </>
-                    }></Route>
-                    <Route path = '/product' element = {
-                        <>
-                            <Navbar />
-                            <ProductDescription />
-                        </>
-                    }></Route>
-                    <Route path = '/' element = {
-                        <>
-                            <Navbar />
-                            <Home />
-                        </>
-                    }></Route>
-                    <Route path='/product/:id' element={
-                        <>
-                            <Navbar />
-                            <ProductDescription />
-                        </>
-                    } /></Routes>
+                    <Route path = '/auth' element = {<LoginSignUp />}></Route>
+                    <Route path = '/checkout' element = {<><Navbar /><Checkout /></>}></Route>
+                    <Route path = '/product' element = {<><Navbar /><ProductDescription /></>}></Route>
+                    <Route path = '/' element = {<><Navbar /><Home /></>}></Route>
+                    <Route path='/product/:id' element={<><Navbar /><ProductDescription /></>} /></Routes>
             </BrowserRouter>
         </>
 
@@ -49,3 +24,4 @@ function App() {
 }
 
 export default App;
+

@@ -19,9 +19,7 @@ function Checkout(){
         country: ""
     });
 
-    //Calculate the total price of order
-    const total = cartItems.reduce((sum, item) => sum + item.productPrice*item.quantity, 0);
-    // Function to handle form changes
+    //handle form changes
     const change = (e) => {
         setFormData({
             ...formData,
@@ -31,6 +29,9 @@ function Checkout(){
 
     const filledFields = Object.values(formData).filter(value => value !== "").length;
     const progressPercentage = (filledFields / 5) * 100;
+
+    //Calculate the total price of order
+    const total = cartItems.reduce((sum, item) => sum + item.productPrice*item.quantity, 0);
 
     const fetchCart = async () => {
         try {
@@ -55,8 +56,7 @@ function Checkout(){
 
         try {
 
-            const user = JSON.parse(localStorage.getItem("email")); // parse JSON
-            const email = user.email;
+            const email = localStorage.getItem("email");
 
             const orderItems = cartItems.map(item => ({
                 productId: item.productId,
@@ -88,7 +88,7 @@ function Checkout(){
                  method: "DELETE",
                  credentials: "include"
              });
-            navigate("/products"); // redirect to home
+            navigate("/"); // redirect to home
 
         } catch (err) {
             console.error(err);
@@ -106,7 +106,7 @@ function Checkout(){
 
                 {cartItems.map((item, index) => (
                     <div className="item" key={index}>
-                        <span><img src ={`http://localhost:8080/ShoesImages/${item.productImage}`} className="order-img" /></span>
+                        <span><img src ={`${API_URL}/images/${item.productImage}`} className="order-img" /></span>
                         <span>£{item.productPrice*item.quantity}</span>
                     </div>
                 ))}

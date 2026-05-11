@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import "../css/productDescription.css";
 
 function ProductPage() {
     const API_URL = import.meta.env.VITE_API_URL;
+    const navigate = useNavigate();
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const sizes = [6, 7, 8, 9, 10, 11, 12];
@@ -27,7 +28,7 @@ function ProductPage() {
             headers: {
                 "Content-Type": "application/json"
             },
-            credentials: "include", // REQUIRED for session
+            credentials: "include", // used to define a session
             body: JSON.stringify({
                 productId: product.productId,
                 size: selectedSize,
@@ -39,6 +40,7 @@ function ProductPage() {
         });
 
         alert("Added to cart");
+        navigate("/");
     };
 
     //Message on the screen while the product loads

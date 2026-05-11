@@ -28,6 +28,8 @@ function Home() {
             });
     }, []);
 
+    if (!products) return <p>Loading...</p>;
+
     return(
         <div className="home">
             <div className="summer-sale">

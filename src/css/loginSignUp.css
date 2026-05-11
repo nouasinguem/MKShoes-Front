@@ -50,6 +50,7 @@
     cursor: pointer;
 }
 
-.guest:hover {
+.guest:hover, .log:hover {
+    color: #08060d;
     background: #f5f5f5;
 }
