@@ -10,6 +10,7 @@ function Home() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
+
         fetch(`${API_URL}/products`)
             .then(res => {
                 if (!res.ok) throw new Error("API error");
@@ -26,7 +27,11 @@ function Home() {
                 console.error(err);
                 setProducts([]);
             });
+
     }, []);
+
+
+
 
     if (!products) return <p>Loading...</p>;
 

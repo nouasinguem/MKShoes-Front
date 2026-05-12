@@ -61,7 +61,14 @@ function Navbar() {
                     ))}
                     {cartItems.length > 0 && (
                         <button className="checkout-btn" onClick= {
-                            () => {navigate("/checkout")}}>
+                            () => {
+                                const user = localStorage.getItem("user");
+
+                                if (!user || user === "guest") {
+                                    alert("You are not logged in. Checkout will not work unless you log in or choose guest checkout.");
+                                }
+                                navigate("/checkout")
+                            }}>
                             Checkout
                         </button>
                     )}
