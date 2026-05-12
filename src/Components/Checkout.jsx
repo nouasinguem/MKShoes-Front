@@ -56,7 +56,8 @@ function Checkout(){
 
         try {
 
-            const email = localStorage.getItem("email");
+            const user = JSON.parse(localStorage.getItem("email"));
+            const email = user.email;
 
             const orderItems = cartItems.map(item => ({
                 productId: item.productId,
