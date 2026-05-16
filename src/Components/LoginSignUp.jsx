@@ -22,9 +22,7 @@ function LoginSignUp (){
     //to handle APIs when connecting logging in or signing up
     const handleSubmit = async () => {
         try {
-            const url = isLogin
-                ? `${API_URL}/auth/login`
-                : `${API_URL}/auth/signup`;
+            const url = isLogin ? `${API_URL}/auth/login` : `${API_URL}/auth/signup`;
 
             const body = isLogin
                 ? {
@@ -55,9 +53,21 @@ function LoginSignUp (){
             // Save user (important step)
             localStorage.setItem("email", JSON.stringify(user));
 
-            alert("Login Successful.\nWelcome to your account " + user.name + ".\nEnjoy shopping with us.");
-            // Redirect to home page
-            navigate("/");
+            alert("Login Successful.\nYou are logged in as " + user.name + ".");
+            // Redirect to check out page or home page
+
+            // Check if we should redirect to checkout
+            const checkoutItem = localStorage.getItem("checkoutItem");
+
+            // Fetch user's cart
+            const cartRes = await fetch(`${API_URL}/cart`, { credentials: "include" });
+            const cartData = await cartRes.json();
+
+            if (checkoutItem || (Array.isArray(cartData) && cartData.length > 0)) {
+                navigate("/checkout");
+            } else {
+                navigate("/");
+            }
 
         } catch (error) {
             console.error("Error:", error);

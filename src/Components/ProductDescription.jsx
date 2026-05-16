@@ -23,25 +23,64 @@ function ProductPage() {
             alert("Select a size first");
             return;
         }
-        await fetch(`${API_URL}/cart/add`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include", // used to define a session
-            body: JSON.stringify({
-                productId: product.productId,
-                size: selectedSize,
-                quantity: quantity,
-                productPrice: product.productPrice,
-                productName: product.productName,
-                productImage: product.productImage
-            })
-        });
 
+        if (product.productStock<quantity) {
+            alert("Insufficient stock");
+            return;
+        }
+        try {
+            await fetch(`${API_URL}/cart/add`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include", // used to define a session
+                body: JSON.stringify({
+                    productId: product.productId,
+                    size: selectedSize,
+                    quantity: quantity,
+                    productPrice: product.productPrice,
+                    productName: product.productName,
+                    productImage: product.productImage
+                })
+            });
+        } catch (err){
+            console.log(err)
+        }
         alert("Added to cart");
         navigate("/");
     };
+
+    const handleBuyNow = async (product) => {
+        const email = localStorage.getItem("email");
+        if (!selectedSize) {//checks the selected size
+            alert("Select a size first");
+            return;
+        }
+        if (product.productStock < quantity) {//checks items in stock
+            alert("Insufficient stock");
+            return;
+        }
+        const checkoutItem = {//Creating the item
+            productId: product.productId,
+            productName: product.productName,
+            productPrice: product.productPrice,
+            productImage: product.productImage,
+            quantity: quantity,
+        };
+
+        //Save the item and quantity in the localStorage to access during the checkout
+        localStorage.setItem("checkoutItem", JSON.stringify(checkoutItem));
+        if (email == null){
+            alert("PLease Login before checking out.");
+            navigate("/auth")//User authentication
+        }else {
+            alert("Redirecting to checkout...");
+            navigate("/checkout"); // only checkout item in cart or localStorage
+        }
+
+    };
+
 
     //Message on the screen while the product loads
     if (!product) return <p>Loading...</p>;
@@ -86,7 +125,7 @@ function ProductPage() {
 
             <div className="buttons">
                 <button className="add" onClick={handleAddToCart}>Add to Cart</button>
-                <button className="buy">Buy Now</button>
+                <button className="buy" onClick={handleBuyNow(product)}>Buy Now</button>
             </div>
         </div>
     );

@@ -10,7 +10,6 @@ function Checkout(){
     useEffect(() => {
         fetchCart();
     }, []);
-    const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         fullName: "",
         address: "",
@@ -18,20 +17,19 @@ function Checkout(){
         postalCode: "",
         country: ""
     });
-
     //handle form changes
     const change = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
-        });
+        });//save the current object
     };
 
+    //Updates the progress bar
     const filledFields = Object.values(formData).filter(value => value !== "").length;
     const progressPercentage = (filledFields / 5) * 100;
 
     //Calculate the total price of order
-    const total = cartItems.reduce((sum, item) => sum + item.productPrice*item.quantity, 0);
 
     const fetchCart = async () => {
         try {
@@ -55,47 +53,87 @@ function Checkout(){
         }
 
         try {
-
             const user = JSON.parse(localStorage.getItem("email"));
+            if (!user || !user.email) {
+                alert("Please log in to place the order");
+                return;
+            }
             const email = user.email;
 
-            const orderItems = cartItems.map(item => ({
-                productId: item.productId,
-                quantity: item.quantity
-            }));
+            // Determine items: "Buy Now" or full cart
+            let items = [];
+            const checkoutItem = JSON.parse(localStorage.getItem("checkoutItem"));
 
+            if (checkoutItem) {
+                items = [
+                    {
+                        productId: checkoutItem.productId,
+                        quantity: checkoutItem.quantity
+                    }
+                ];
+            } else {
+                items = cartItems.map(item => ({
+                    productId: item.productId,
+                    quantity: item.quantity
+                }));
+            }
+
+            // Build order request
+            const orderRequest = {
+                userEmail: email,
+                items: items
+            };
+
+            // Send order to backend
             const res = await fetch(`${API_URL}/orders/`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({
-                    userEmail: email,
-                    items: orderItems
-                })
+                body: JSON.stringify(orderRequest)
             });
 
+
             if (!res.ok) {
-                console.log(res);
                 const text = await res.text();
                 console.error("Server error:", text);
-                console.log("EMAIL:", email);
                 throw new Error("Order failed");
             }
 
             alert("Order placed successfully!");
-             await fetch(`${API_URL}/cart/clear-cart`, {
-                 method: "DELETE",
-                 credentials: "include"
-             });
-            navigate("/"); // redirect to home
+            //Empty the cart
+            if (!checkoutItem) {
+                await fetch(`${API_URL}/cart/clear-cart`, {method: "DELETE", credentials: "include"});
+            }
+            localStorage.removeItem("checkoutItem");
+
+            navigate("/"); // Redirect to home
 
         } catch (err) {
             console.error(err);
             alert("Failed to place order");
         }
     };
+
+    //To display the appropriate content
+    const displayItems = () => {
+        const checkoutItem = JSON.parse(localStorage.getItem("checkoutItem"));
+        if (checkoutItem) {
+            return [
+                {
+                    productId: checkoutItem.productId,
+                    productName: checkoutItem.productName,
+                    productPrice: checkoutItem.productPrice,
+                    productImage: checkoutItem.productImage,
+                    quantity: checkoutItem.quantity,
+                }
+            ];
+        } else {
+            return cartItems;
+        }
+    };
+
+    const total = displayItems().reduce((sum, item) => sum + item.productPrice*item.quantity, 0);
+
 
     return(
         <div className="checkout-container">
@@ -105,7 +143,7 @@ function Checkout(){
             <div className="card">
                 <h3>Order Summary</h3>
 
-                {cartItems.map((item, index) => (
+                {displayItems().map((item, index) => (
                     <div className="item" key={index}>
                         <span><img src ={`${API_URL}/images/${item.productImage}`} className="order-img" /></span>
                         <span>£{item.productPrice*item.quantity}</span>
