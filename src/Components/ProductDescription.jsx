@@ -125,7 +125,7 @@ function ProductPage() {
 
             <div className="buttons">
                 <button className="add" onClick={handleAddToCart}>Add to Cart</button>
-                <button className="buy" onClick={handleBuyNow(product)}>Buy Now</button>
+                <button className="buy" onClick={() => handleBuyNow(product)}>Buy Now</button>
             </div>
         </div>
     );
