@@ -24,6 +24,8 @@ function Navbar() {
     });
     const email = authState.email;
     const isLoggedIn = authState.isLoggedIn;
+    const isGuest = email === "guest@shop";
+    const isRealUser = isLoggedIn && !isGuest;
 
     const fetchOrders = async () => {
 
@@ -148,7 +150,7 @@ function Navbar() {
     }, [location.pathname]);
 
     const authClick = () => {
-        if (isLoggedIn) {
+        if (isLoggedIn && !isGuest) {
             // log out
             localStorage.setItem("user", JSON.stringify({email: null, isLoggedIn: false}));
             setAuthState({email: null, isLoggedIn: false});
@@ -156,7 +158,7 @@ function Navbar() {
             navigate("/"); //redirects user to the home page
             return;
         }
-        //in defaul case this redirects the user to authentication
+        //in default case this redirects the user to authentication
         navigate("/auth");
     };
 
@@ -176,7 +178,7 @@ function Navbar() {
                    {cartCount > 0 && <span className="cart-count">({cartCount})</span>}
                </span>
                 <button className="auth" onClick={authClick}>
-                    {isLoggedIn ? "Log Out" : "Login"}
+                    {isRealUser ? "Log Out" : "Login"}
                 </button>
             </div>
             {showOrders && (
