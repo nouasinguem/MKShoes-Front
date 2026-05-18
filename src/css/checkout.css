@@ -14,8 +14,9 @@
 
 .item {
     display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: flex-start;
 }
 
 .order-img {
@@ -26,7 +27,24 @@
     border: 1px solid black;
 }
 
-
+.namePrice {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.item-name {
+    font-weight: bold;
+}
+.linePrice {
+    color: #666;
+}
+.item-info {
+    flex: 1;
+}
+.item-total {
+    font-weight: bold;
+    margin-top: 4px;
+}
 .total {
     display: flex;
     justify-content: space-between;
@@ -34,7 +52,6 @@
     font-size: 18px;
 }
 
-/* INPUTS */
 input {
     width: 100%;
     padding: 10px;

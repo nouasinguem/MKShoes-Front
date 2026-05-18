@@ -10,18 +10,28 @@ function Home() {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
-    const searchProduct = async () => {
+    const searchProduct = async (value) => {
 
         try {
-            const res = await fetch(
-                `${API_URL}/products/search?name=${search}`
-            );
+            let res;
+            if (!value || value.trim() === "") {//displays all products if the search bar is empty
+                res = await fetch(`${API_URL}/products`);
+            } else {
+                res = await fetch(`${API_URL}/products/search?name=${value}`);
+            }
             const data = await res.json();
             setProducts(data);
         } catch (err) {
             console.error(err);
         }
     };
+
+    if (!localStorage.getItem("user")) {//user and login status
+        localStorage.setItem("user", JSON.stringify({
+            email: null,
+            isLoggedIn: false
+        }));
+    }
     localStorage.removeItem("checkoutItem");//In case any item is still in the storage
 
     useEffect(() => {
@@ -44,6 +54,7 @@ function Home() {
 
     }, []);
 
+
     if (products.length == 0) return <p>Loading...</p>;
     return(
         <div className="home">
@@ -55,7 +66,7 @@ function Home() {
                     type="text"
                     placeholder="Search products..."
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => {setSearch(e.target.value);searchProduct(e.target.value);}}
                 />
                 <img src={src} onClick={searchProduct}/>
             </div>
@@ -79,8 +90,6 @@ function Home() {
             </div>
 
         </div>
-
-
     );
 }
 

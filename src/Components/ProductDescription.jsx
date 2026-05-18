@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {useNavigate, useParams} from "react-router-dom";
 import "../css/productDescription.css";
 
@@ -51,37 +52,34 @@ function ProductPage() {
         navigate("/");
     };
 
-    const handleBuyNow = async (product) => {
-        const email = localStorage.getItem("email");
-        if (!selectedSize) {//checks the selected size
-            alert("Select a size first");
-            return;
+    const handleBuyNow = async () => {
+        const storedUser = localStorage.getItem("user");
+        const user = storedUser ? JSON.parse(storedUser) : null;
+        const email = user?.email;
+        const isLoggedIn = user?.isLoggedIn;
+        if (!selectedSize) {
+        alert("Select a size first");
+        return;
         }
-        if (product.productStock < quantity) {//checks items in stock
+        if (product.productStock < quantity) {
             alert("Insufficient stock");
-            return;
-        }
-        const checkoutItem = {//Creating the item
+            return;    }
+        // save checkout item
+        const checkoutItem = {
             productId: product.productId,
             productName: product.productName,
             productPrice: product.productPrice,
             productImage: product.productImage,
-            quantity: quantity,
-        };
-
-        //Save the item and quantity in the localStorage to access during the checkout
+            quantity: quantity    };
         localStorage.setItem("checkoutItem", JSON.stringify(checkoutItem));
-        if (email == null){
-            alert("PLease Login before checking out.");
-            navigate("/auth")//User authentication
-        }else {
-            alert("Redirecting to checkout...");
-            navigate("/checkout"); // only checkout item in cart or localStorage
+        // LOGIN CHECK
+        if (!isLoggedIn || !email) {
+            alert("Please login before checking out.");
+            navigate("/auth");
+            return;
         }
-
-    };
-
-
+        alert("Redirecting to checkout...");
+        navigate("/checkout");};
     //Message on the screen while the product loads
     if (!product) return <p>Loading...</p>;
 
@@ -125,7 +123,7 @@ function ProductPage() {
 
             <div className="buttons">
                 <button className="add" onClick={handleAddToCart}>Add to Cart</button>
-                <button className="buy" onClick={() => handleBuyNow(product)}>Buy Now</button>
+                <button className="buy" onClick={handleBuyNow}>Buy Now</button>
             </div>
         </div>
     );

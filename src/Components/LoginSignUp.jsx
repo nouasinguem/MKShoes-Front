@@ -43,16 +43,19 @@ function LoginSignUp (){
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error("Backend error:", errorText);
-                throw new Error(errorText || "Request failed");            }
+                console.error("Error:", errorText);
+                throw new Error(errorText || "Request failed");
+            }
 
             const user = await response.json();
 
             console.log("User:", user);
 
-            // Save user (important step)
-            localStorage.setItem("email", JSON.stringify(user));
-
+            // Save user
+            localStorage.setItem("user", JSON.stringify({
+                email: user.email,
+                isLoggedIn: true
+            }));
             alert("Login Successful.\nYou are logged in as " + user.name + ".");
             // Redirect to check out page or home page
 
@@ -71,22 +74,35 @@ function LoginSignUp (){
 
         } catch (error) {
             console.error("Error:", error);
-            alert("Login/Signup failed");
+            alert("Invalid credentials. Please try again.");
 
         }
     };
 
-    const guestCheckout = () => {
-        const guestEmail = "guest@shop";
+    const guestCheckout = async () => {
+        // Save guest user
+        localStorage.setItem("user", JSON.stringify({
+            email: "guest@shop",
+            isLoggedIn: true
+        }));
+        alert("Hope you enjoy your shopping!!");
+        const checkoutItem = localStorage.getItem("checkoutItem");
+        // Fetch user's cart (guest cart is still stored in the backend session)
+        let cartData = [];
+        try {
+            const cartRes = await fetch(`${API_URL}/cart`,
+                { credentials: "include"
+                });
+            cartData = await cartRes.json();
+        } catch (err) {
+            console.error("Cart fetch failed:", err);
+        }
+        if (checkoutItem || (Array.isArray(cartData) && cartData.length > 0)) {
+            navigate("/checkout");
+        } else {
+            navigate("/");
+        }};
 
-        // store guest email same way as normal users
-        localStorage.setItem("email", guestEmail);
-
-        console.log("Guest mode:", guestEmail);
-
-        alert("Hope you enjoy your shopping!!")
-        navigate("/");
-    };
     return (
         <div className="container">
             <img src = {logo} alt = "MKShoes Logo"/>
@@ -131,5 +147,6 @@ function LoginSignUp (){
         </div>
       );
  }
+
 
 export default LoginSignUp;

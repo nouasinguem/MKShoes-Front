@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "../css/navBar.css";
 import logo from "../Images/MKDesign.png"
@@ -11,25 +11,31 @@ import viewOrder from "../Images/myorders.png"
 function Navbar() {
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
+    const location = useLocation();
     const [showOrders, setShowOrders] = useState(false);
     const [orders, setOrders] = useState([]);
     const [showCart, setShowCart] = useState(false);
     const [cartItems, setCartItems] = useState([]);
+    const cartCount = cartItems.length;
+    //for authentication
+    const [authState, setAuthState] = useState(() => {
+        const stored = localStorage.getItem("user");
+        return stored ? JSON.parse(stored) : { email: null, isLoggedIn: false };
+    });
+    const email = authState.email;
+    const isLoggedIn = authState.isLoggedIn;
+
     const fetchOrders = async () => {
 
         try {
-            const storedData = localStorage.getItem("email");
-            let email = null;
+            const storedUser = localStorage.getItem("user");
+            const user = storedUser ? JSON.parse(storedUser) : null;
+            const email = user?.email;
+            const isLoggedIn = user?.isLoggedIn;
 
-            try {
-                const parsed = JSON.parse(storedData); // try parsing
-                email = parsed.email || storedData;
-            } catch (e) {
-                email = storedData;// if it's a string
-            }
-
-            if (!email || email === "guest@shop") {
-                alert("Please login first");
+            if (!isLoggedIn || !email || email === "guest@shop") {//this checks if the user is logged in
+                alert("Please login to view your orders");
+                navigate("/auth");
                 return;
             }
 
@@ -100,7 +106,10 @@ function Navbar() {
     };
     const redirectCheckout = async () => {
 
-        const email = localStorage.getItem("email");
+        const storedUser = localStorage.getItem("user");
+        const user = storedUser ? JSON.parse(storedUser) : null;
+        const email = user?.email;
+        const isLoggedIn = user?.isLoggedIn;
         try {
             // Check stock for each cart item
             let stockIssue = false;
@@ -121,18 +130,34 @@ function Navbar() {
                     navigate("/auth");//for users not logged in
                     return;
                 }
-                if (email == null){
-                    alert("Please Login before checking out.");
-                    navigate("/auth"); //Redirect user to the login/signup page not yet logged in
-                }else {
-                    alert("Redirecting to checkout...");
-                    navigate("/checkout"); // only checkout if enough stock and user logged in
-                    }
+                if (!isLoggedIn || !email) {
+                    alert("Please login before checking out.");
+                    navigate("/auth");
+                    return;
                 }
+                alert("Redirecting to checkout...");
+                navigate("/checkout"); // only checkout if enough stock and user logged in
+            }
         } catch (err) {
             console.error(err);
             alert("Error checking stock. Please try again.");
         }
+    };
+    useEffect(() => {
+        fetchCart(); // load cart immediately on page load
+    }, [location.pathname]);
+
+    const authClick = () => {
+        if (isLoggedIn) {
+            // log out
+            localStorage.setItem("user", JSON.stringify({email: null, isLoggedIn: false}));
+            setAuthState({email: null, isLoggedIn: false});
+            alert("You have been logged out.");
+            navigate("/"); //redirects user to the home page
+            return;
+        }
+        //in defaul case this redirects the user to authentication
+        navigate("/auth");
     };
 
     return (
@@ -146,12 +171,13 @@ function Navbar() {
                 <span onClick={viewOrderClick}>
                    <img src={viewOrder} alt="View Order Icon" className="view-order" />
                </span>
-               <span onClick={cartClick}>
+               <span className="cart1" onClick={cartClick}>
                    <img src={cart} alt="Cart icon" className="cart" />
+                   {cartCount > 0 && <span className="cart-count">({cartCount})</span>}
                </span>
-               <Link to="/auth">
-                   <img src={auth} alt="Auth icon" className="auth" />
-               </Link>
+                <button className="auth" onClick={authClick}>
+                    {isLoggedIn ? "Log Out" : "Login"}
+                </button>
             </div>
             {showOrders && (
                 <div className="cart-dropdown">

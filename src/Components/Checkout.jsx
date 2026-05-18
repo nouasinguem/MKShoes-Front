@@ -85,7 +85,7 @@ function Checkout(){
             };
 
             // Send order to backend
-            const res = await fetch(`${API_URL}/orders/`, {
+            const res = await fetch(`${API_URL}/orders`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -111,6 +111,7 @@ function Checkout(){
         } catch (err) {
             console.error(err);
             alert("Failed to place order");
+            console.log(email);
         }
     };
 
@@ -146,7 +147,16 @@ function Checkout(){
                 {displayItems().map((item, index) => (
                     <div className="item" key={index}>
                         <span><img src ={`${API_URL}/images/${item.productImage}`} className="order-img" /></span>
-                        <span>£{item.productPrice*item.quantity}</span>
+                        <div className="item-info">
+                            <div className="namePrice">
+                                <span className="item-name">{item.productName}</span>
+                                <span className="linePrice">{item.quantity} × £{item.productPrice}</span>
+                            </div>
+                            <div className="namePrice">
+                                <span></span>
+                                <span className="item-total">£{item.quantity * item.productPrice}</span>
+                            </div>
+                        </div>
                     </div>
                 ))}
                 <hr />
