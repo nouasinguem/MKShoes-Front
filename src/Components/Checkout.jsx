@@ -53,12 +53,14 @@ function Checkout(){
         }
 
         try {
-            const user = JSON.parse(localStorage.getItem("email"));
-            if (!user || !user.email) {
+            const stored = localStorage.getItem("user");
+            const user1 = stored ? JSON.parse(stored) : null;
+            const email = user1?.email;
+            const isLoggedIn = user1?.isLoggedIn;
+            if (!isLoggedIn || !email) {
                 alert("Please log in to place the order");
                 return;
             }
-            const email = user.email;
 
             // Determine items: "Buy Now" or full cart
             let items = [];
